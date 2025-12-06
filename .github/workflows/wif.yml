@@ -1,0 +1,42 @@
+# This is a basic workflow to help you get started with Actions
+
+name: CI
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+# permissions:
+#   contents: read
+  
+  
+jobs:
+  
+  terraform:
+    # The type of runner that the job will run on
+    name: 'Terraform'
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v4
+
+      - id: auth
+        uses: google-github-actions/auth@v0.4.0
+        with:
+           workload_identity_provider: 'projects/95334848214/locations/global/workloadIdentityPools/github-pool/providers/github'
+           service_account: 'tf-wif@bhaskar-478205.iam.gserviceaccount.com'
+
+      # Runs a set of commands using the runners shell
+      - name: Run Terraform init
+        run: terraform init
+
+      # Runs a set of commands using the runners shell
+      - name: Run Terraform plan
+        run: terraform plan
+
+      # Runs a set of commands using the runners shell
+      - name: Run Terraform apply
+        run: terraform apply --auto-approve
+
+        
